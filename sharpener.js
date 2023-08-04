@@ -46,3 +46,16 @@ var secondItem = document.querySelector(".list-group-item:nth-child(2)");
 secondItem.style.color = "coral";
 
 //?Query SelectorAll
+var titles = document.querySelectorAll(".title");
+
+console.log(titles);
+titles[0].textContent = "Hello";
+
+var odd = document.querySelectorAll("li:nth-child(odd)");
+var even = document.querySelectorAll("li:nth-child(even)");
+var nthChild = document.querySelectorAll("li:nth-child(2)");
+
+for (var i = 0; i < odd.length; i++) {
+  odd[i].style.backgroundColor = "green";
+  even[i].style.color = "green";
+}
