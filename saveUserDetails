@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User Form</title>
+  </head>
+  <body>
+    <h2>User Form</h2>
+    <form>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" /><br /><br />
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" /><br /><br />
+      <button type="button" onclick="saveUser()">Submit</button>
+    </form>
+
+    <h2>User List</h2>
+    <ul id="userList"></ul>
+
+    <script>
+      function saveUser() {
+        // Get the input values
+        var name = document.getElementById("name").value;
+        var email = document.getElementById("email").value;
+
+        // Create a new user object
+        var user = {
+          name: name,
+          email: email,
+        };
+
+        // Get the array of users from localStorage
+        var users = JSON.parse(localStorage.getItem("users")) || [];
+
+        // Add the new user to the array
+        users.push(user);
+
+        // Save the new array of users to localStorage
+        localStorage.setItem("users", JSON.stringify(users));
+
+        // Update the user list in the HTML document
+        var userList = document.getElementById("userList");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(name + " - " + email));
+        userList.appendChild(li);
+
+        // Reset the form inputs
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+      }
+
+      // Populate the user list from localStorage on page load
+      window.onload = function () {
+        var users = JSON.parse(localStorage.getItem("users")) || [];
+        var userList = document.getElementById("userList");
+
+        for (var i = 0; i < users.length; i++) {
+          var user = users[i];
+          var li = document.createElement("li");
+          li.appendChild(
+            document.createTextNode(user.name + " - " + user.email)
+          );
+          userList.appendChild(li);
+        }
+      };
+    </script>
+  </body>
+</html>
