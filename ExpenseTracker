@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous"
+    />
+
+    <title>Expense tracker</title>
+  </head>
+  <body>
+    <h1 style="text-align: center">Expense Tracker</h1>
+    <div>
+      <label for="expenseAmount">Choose Expense Amount:</label>
+      <input type="number" max="1000" min="1" id="expenseAmount" />
+
+      <label for="description">Choose Description:</label>
+      <input type="text" id="description" />
+
+      <label for="category">Choose Category:</label>
+      <select id="category">
+        <option>Food</option>
+        <option>Fuel</option>
+        <option>Electricity</option>
+        <option>Recharge</option>
+      </select>
+
+      <button id="addExpense">Add Expense</button>
+      <ul id="expenseList"></ul>
+    </div>
+    <script src="./expense.js"></script>
+  </body>
+</html>
+
+//---------------------------------------------JAVASCRIPT FILE-----------------------------------------------------
+let expenseInput = document.getElementById("expenseAmount");
+let descriptionInput = document.getElementById("description");
+let categoryInput = document.getElementById("category");
+let addExpenseButton = document.getElementById("addExpense");
+let expenseList = document.getElementById("expenseList");
+
+let expenses = [];
+
+if (localStorage.expenses) {
+  expenses = JSON.parse(localStorage.expenses);
+}
+
+addExpenseButton.addEventListener("click", function () {
+  let expenseAmount = expenseInput.value;
+  let description = descriptionInput.value;
+  let category = categoryInput.value;
+
+  let expense = {
+    amount: expenseAmount,
+    description: description,
+    category: category,
+  };
+
+  expenses.push(expense);
+  localStorage.expenses = JSON.stringify(expenses);
+  displayExpenses();
+  expenseInput.value = "";
+  descriptionInput.value = "";
+});
+
+function displayExpenses() {
+  expenseList.innerHTML = "";
+
+  for (let i = 0; i < expenses.length; i++) {
+    let expense = expenses[i];
+    let listItem = document.createElement("li");
+    listItem.className =
+      "list-group-item d-flex justify-content-between align-items-center";
+    listItem.innerHTML = `Expense Amount: ${expense.amount}, Description: ${expense.description}, Category: ${expense.category}`;
+
+    let deleteButton = document.createElement("button");
+    deleteButton.innerHTML = " Delete";
+    deleteButton.className = "btn btn-danger";
+    deleteButton.addEventListener("click", function () {
+      expenses.splice(i, 1);
+      localStorage.expenses = JSON.stringify(expenses);
+      displayExpenses();
+    });
+
+    let editButton = document.createElement("button");
+    editButton.innerHTML = " Edit";
+    editButton.className = "btn btn-primary";
+    editButton.addEventListener("click", function () {
+      expenseInput.value = expense.amount;
+      descriptionInput.value = expense.description;
+      categoryInput.value = expense.category;
+      expenses.splice(i, 1);
+      localStorage.expenses = JSON.stringify(expenses);
+      displayExpenses();
+    });
+
+    listItem.appendChild(deleteButton);
+    listItem.appendChild(editButton);
+    expenseList.appendChild(listItem);
+  }
+}
+
+displayExpenses();
+
