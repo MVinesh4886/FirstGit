@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Form Data Display</title>
+  </head>
+  <body>
+    <h1>ChocoShop</h1>
+    <form id="myForm">
+      <!-- Form fields -->
+      <label for="candyname">Candy Name:</label>
+      <input type="text" id="candyname" name="candyname" /><br /><br />
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" /><br /><br />
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" name="quantity" /><br /><br />
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" /><br /><br />
+
+      <button type="button" onclick="addFormData()">Add</button>
+    </form>
+
+    <h2>Form Data Display</h2>
+    <ul id="dataContainer"></ul>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+      const candy = {
+        chocolate: 10,
+        gummy: 20,
+        lollipop: 15,
+      };
+      function addFormData() {
+        const candyname = document.getElementById("candyname").value;
+        const description = document.getElementById("description").value;
+        const quantity = parseInt(document.getElementById("quantity").value);
+        const price = parseFloat(document.getElementById("price").value);
+
+        if (candy[candyname] >= quantity) {
+          const formData = {
+            candyname,
+            description,
+            quantity,
+            price,
+          };
+
+          // Create the form data in the database using Axios
+          axios
+            .post(
+              "https://crudcrud.com/api/52d8601bb50d491f9b87eb3c34fe7053/ChocoShop",
+              formData
+            )
+            .then(function (response) {
+              // Clear form fields
+              document.getElementById("candyname").value = "";
+              document.getElementById("description").value = "";
+              document.getElementById("quantity").value = "";
+              document.getElementById("price").value = "";
+
+              // Update candy inventory
+              candy[candyname] -= quantity;
+
+              // Update candy quantity on the DOM
+              document
+                .getElementById("dataContainer")
+                .insertAdjacentHTML(
+                  "afterbegin",
+                  `<li>${candyname}: ${quantity}</li>`
+                );
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+        } else {
+          alert("Not enough candy in inventory");
+        }
+      }
+  
+    </script>
+  </body>
+</html>
